@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const pg_1 = require("pg");
 class PG {
     constructor(db_host, db_port, db_user, db_name, db_password) {
         this.db_host = db_host;
@@ -10,6 +11,15 @@ class PG {
     }
     GetDBInfos() {
         return ` DB HOST : ${this.db_host} \n DB PORT : ${this.db_port} \n DB NAME : ${this.db_name} \n DB USER : ${this.db_user} \n DB PASS : ${this.db_password} \n`;
+    }
+    ConnectDb() {
+        return new pg_1.Pool({
+            user: this.db_user,
+            host: this.db_host,
+            database: this.db_name,
+            password: this.db_password,
+            port: this.db_port,
+        });
     }
 }
 /**
@@ -27,7 +37,7 @@ class PG {
 * | **db_port**        | number        | `5432`      | Server port of postgresql database
 * | **db_name**        | string        | `postgres`  | Postgresql database name
 * | **db_user**        | string        | `postgres`  | Postgresql database user name
-* | **db_password**    | string-number | `1234`      | Postgresql database password
+* | **db_password**    | string        | `1234`      | Postgresql database password
 *
 *---
 * ### Example:
@@ -42,11 +52,17 @@ class PG {
 * Note: The localhost value assumes that Postgresql is installed on your system.
 */
 class RelPg extends PG {
-    constructor(db_host = "localhost", db_port = 5432, db_user = "postgres", db_name = "postgres", db_password = 1234) {
+    constructor(db_host = "localhost", db_port = 5432, db_user = "postgres", db_name = "postgres", db_password = "1234") {
         super(db_host, db_port, db_user, db_name, db_password);
+        this.db = this.ConnectDb();
     }
-    C() {
-        console.log("deneme");
+    Connect() {
+        return this.ConnectDb();
+    }
+    SELECT() {
+        this.db.query('SELECT * FROM users', [], (err, res) => {
+            console.log(res);
+        });
     }
 }
 exports.default = RelPg;

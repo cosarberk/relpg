@@ -1,4 +1,4 @@
-
+import { Pool } from "pg";
 
 
 
@@ -38,11 +38,31 @@ abstract class PG{
      * - #### Default: `5432`
      */
     db_user:string;
+     /**
+     * ### DatabaseName
+     * 
+     * Postgresql database database name
+     * 
+     * ---
+     * - #### Option: `db_name`
+     * - #### Type: `string`
+     * - #### Default: `postgres`
+     */
     db_name:string;
-    db_password:string|number;
+     /**
+     * ### Password
+     * 
+     * Postgresql database database password
+     * 
+     * ---
+     * - #### Option: `db_password`
+     * - #### Type: `string`
+     * - #### Default: `1234`
+     */
+    db_password:string;
 
     constructor(
-        db_host:string,db_port:number,db_user:string,db_name:string,db_password:string|number){
+        db_host:string,db_port:number,db_user:string,db_name:string,db_password:string){
         this.db_host=db_host;
         this.db_name=db_name;
         this.db_password=db_password;
@@ -52,6 +72,17 @@ abstract class PG{
 
     GetDBInfos(){
         return ` DB HOST : ${this.db_host} \n DB PORT : ${this.db_port} \n DB NAME : ${this.db_name} \n DB USER : ${this.db_user} \n DB PASS : ${this.db_password} \n` 
+    }
+
+    ConnectDb(){
+        return  new Pool({
+            user: this.db_user,
+            host:this.db_host,
+            database: this.db_name,
+            password: this.db_password,
+            port: this.db_port,
+        })
+
     }
 }
 
@@ -72,7 +103,7 @@ abstract class PG{
  * | **db_port**        | number        | `5432`      | Server port of postgresql database
  * | **db_name**        | string        | `postgres`  | Postgresql database name
  * | **db_user**        | string        | `postgres`  | Postgresql database user name
- * | **db_password**    | string-number | `1234`      | Postgresql database password
+ * | **db_password**    | string        | `1234`      | Postgresql database password
  * 
  *---
  * ### Example:
@@ -87,20 +118,27 @@ abstract class PG{
  * Note: The localhost value assumes that Postgresql is installed on your system.
  */
 export default class RelPg extends PG{
-
+    db:any
     constructor(
         db_host:string="localhost",
         db_port:number=5432,
         db_user:string="postgres",
         db_name:string="postgres",
-        db_password:string|number=1234
+        db_password:string="1234"
         ){
             super(db_host,db_port,db_user,db_name,db_password);
+            this.db=this.ConnectDb();
     }
 
 
-    C(){
-        console.log("deneme")
+    Connect(){
+        return this.ConnectDb()
+    }
+
+    SELECT(){
+        this.db.query('SELECT * FROM users',[],(err:any,res:any)=>{
+            console.log(res)
+        })
     }
 }
 

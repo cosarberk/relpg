@@ -3,9 +3,10 @@ import relpg from "./relpg/relpg";
 
 //  const RELPG = new relpg("localhost",5432,"megasoft","daze","159654")
 
- const RELPG = new relpg("",)
+ const RELPG = new relpg("dazedate.com",5432,"megasoft","daze","159654");
 
-console.log(RELPG.GetDBInfos())
+ RELPG.SELECT()
+// console.log(DB)
 
 
 
