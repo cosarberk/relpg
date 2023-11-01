@@ -140,7 +140,7 @@ abstract class PG {
 * 
 * Note: The localhost value assumes that Postgresql is installed on your system.
 */
-export default class RelPg extends PG {
+export class RelPg extends PG {
     db: any
     constructor(
         db_host: string = "localhost",
@@ -734,7 +734,117 @@ export default class RelPg extends PG {
 ///////////////////// TABLE METHODS \\\\\\\\\\\\\\\\\\\\\\\\
 
 
+//#region /// CREATETABLE \\\
+    /**
+     * ### CREATETABLE()
+     * 
+     * Runs a CREATE query based on the given table name
+     * 
+     * It creates a CREATE string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     * ---
+     * 
+     * ### Options
+     * 
+     * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
+     * | :-                 | :-             | :-          | :-
+     * | **tableName**      | string         | `""`        | Table name to be created
+     * | **force**          | boolean        | `false`     | Force database creation
+     * 
+     * 
+     * 
+     * ---
+     * 
+     * ### Examples
+     * ```ts
+     * await RELPG.
+     * ```
+     * > convert ``
+     * 
+     */
+    async CREATETABLE(
+        /**
+         *  `Table Name`
+         */
+        TableName: string,
+        /**
+         *  `force status`
+         * 
+         * If the "force" value is true, overwrites even if the table name to be created exists
+         * 
+         * NOTE : This action will delete all data in the table.
+         */
+        force: boolean = false
+        ) {
+            
+             const q = `CREATE TABLE ${force?"":"[IF NOT EXISTS]"} ${TableName}`
+            console.log(q)
+    }
+//#endregion
+
+
+
 }
 
 //#endregion
 
+// "smallint": "smallint",
+// "integer": "integer",
+// "bigint": "bigint",
+// "decimal": "numeric",
+// "numeric": "numeric",
+// "real": "real",
+// "double precision": "double precision",
+// "smallserial": "smallint",
+// "serial": "integer",
+// "bigserial": "bigint",
+// "money": "money",
+// "character varying(n)": "varchar(n)",
+// "character(n)": "char(n)",
+// "text": "text",
+// "date": "date",
+// "time": "time without time zone",
+// "time with time zone": "time with time zone",
+// "timestamp": "timestamp without time zone",
+// "timestamp with time zone": "timestamp with time zone",
+// "boolean": "boolean",
+// "enum": "enum",
+// "uuid": "uuid",
+// "json": "json",
+// "jsonb": "jsonb",
+// "bytea": "bytea",
+// "bit(n)": "bit(n)",
+// "bit varying(n)": "varbit(n)",
+// "interval": "interval",
+// "oid": "oid",
+// "macaddr": "macaddr",
+// "cidr": "cidr",
+// "inet": "inet",
+// "macaddr8": "macaddr8",
+// "pg_lsn": "pg_lsn",
+// "pg_snapshot": "pg_snapshot",
+// "box": "box",
+// "point": "point",
+// "path": "path",
+// "polygon": "polygon",
+// "line": "line",
+// "lseg": "lseg",
+// "circle": "circle",
+// "line_segment": "line_segment",
+// "tsquery": "tsquery",
+// "tsvector": "tsvector",
+// "tsrange": "tsrange",
+// "tstzrange": "tstzrange",
+// "daterange": "daterange",
+// "int4range": "int4range",
+// "int8range": "int8range",
+// "numrange": "numrange",
+// "tsquery": "tsquery",
+// "regclass": "regclass",
+// "regnamespace": "regnamespace",
+// "regproc": "regproc",
+// "regprocedure": "regprocedure",
+// "regoper": "regoper",
+// "regoperator": "regoperator",
+// "regconfig": "regconfig",
+// "regdictionary": "regdictionary"

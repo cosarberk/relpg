@@ -1,4 +1,1 @@
-
-'use strict'
-
-export * from "./relpg"
+export {RelPg} from "./relpg"
