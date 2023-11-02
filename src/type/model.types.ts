@@ -15,3 +15,7 @@ export type RelpgModelType={
     table:RelpgTableType,
     column:RelpgTableColumnType
 }
+
+export type RelModelsType={
+    models:RelpgModelType[]
+}

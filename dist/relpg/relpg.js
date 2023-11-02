@@ -744,33 +744,137 @@ var RelPg = /** @class */ (function (_super) {
     force) {
         if (force === void 0) { force = false; }
         return __awaiter(this, void 0, void 0, function () {
-            var q, rd, q;
+            var rd, q, q;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        if (!force) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.DELETEDB(DBName)];
+                    case 0: return [4 /*yield*/, this.LISTDB(DBName)];
                     case 1:
+                        rd = _a.sent();
+                        if (!(rd.rowCount > 0)) return [3 /*break*/, 6];
+                        if (!force) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this.DELETEDB(DBName)];
+                    case 2:
                         _a.sent();
                         q = "CREATE DATABASE ".concat(DBName);
                         return [4 /*yield*/, this.Query(q)];
-                    case 2: return [2 /*return*/, _a.sent()];
-                    case 3: return [4 /*yield*/, this.LISTDB(DBName)];
+                    case 3: return [2 /*return*/, _a.sent()];
                     case 4:
-                        rd = _a.sent();
-                        if (!(rd.rowCount > 0)) return [3 /*break*/, 5];
                         console.log("Database already exists");
                         return [2 /*return*/, rd.rows];
-                    case 5:
+                    case 5: return [3 /*break*/, 8];
+                    case 6:
                         q = "CREATE DATABASE ".concat(DBName);
                         return [4 /*yield*/, this.Query(q)];
-                    case 6: return [2 /*return*/, _a.sent()];
+                    case 7: return [2 /*return*/, _a.sent()];
+                    case 8: return [2 /*return*/];
                 }
             });
         });
     };
     //#endregion
     ///////////////////// TABLE METHODS \\\\\\\\\\\\\\\\\\\\\\\\
+    //#region /// LISTTABLE \\\
+    /**
+     * ### LISTTABLE()
+     *
+     * Runs a SELECT query based on the given table
+     *
+     * It creates a SELECT string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     * ---
+     *
+     * ### Options
+     *
+     * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
+     * | :-                 | :-             | :-          | :-
+     * | **tableName**      | string         | `""`        | Existing table name
+     * | **titles**         | string         | `tablename` | Table headers of the values ​​to be listed
+     *
+     *
+     *
+     * ---
+     *
+     * ### Examples
+     * ```ts
+     * await RELPG.LISTTABLE("users")
+     * ```
+     * > convert `SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema' AND tablename='user';`
+     *
+     */
+    RelPg.prototype.LISTTABLE = function (
+    /**
+     *  `Table Name`
+     */
+    tableName, 
+    /**
+    *  `Titles`
+    *
+    * Note : The contents are a string separated by commas
+    */
+    titles) {
+        if (titles === void 0) { titles = "tablename"; }
+        return __awaiter(this, void 0, void 0, function () {
+            var q;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        q = "SELECT ".concat(titles, " FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema' AND tablename='").concat(tableName, "';");
+                        return [4 /*yield*/, this.Query(q)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    //#endregion
+    //#region /// DELETETABLE \\\
+    /**
+     * ### DELETETABLE()
+     *
+     * Runs a DELETE query based on the given table name
+     *
+     * It creates a DELETE string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     *
+     *
+     * ## WARNING : this function will deleted all datas of table
+     *
+     * ---
+     *
+     * ### Options
+     *
+     * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
+     * | :-                 | :-             | :-          | :-
+     * | **tableName**      | string         | `""`        | Table name to be deleted
+     *
+     *
+     *
+     * ---
+     *
+     * ### Examples
+     * ```ts
+     * await RELPG.DELETETABLE("users")
+     * ```
+     * > convert `DELETE DROP users;`
+     *
+     */
+    RelPg.prototype.DELETETABLE = function (
+    /**
+     *  `Table Name`
+     */
+    TableName) {
+        return __awaiter(this, void 0, void 0, function () {
+            var q;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        q = "DROP TABLE ".concat(TableName, ";");
+                        return [4 /*yield*/, this.Query(q)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    //#endregion
     //#region /// CREATETABLE \\\
     /**
      * ### CREATETABLE()
@@ -786,7 +890,8 @@ var RelPg = /** @class */ (function (_super) {
      * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
      * | :-                 | :-             | :-          | :-
      * | **tableName**      | string         | `""`        | Table name to be created
-     * | **force**          | boolean        | `false`     | Force database creation
+     * | **columns**        | string         | `""`        | Columns properties to be created
+     * | **force**          | boolean        | `false`     | Force table creation
      *
      *
      *
@@ -794,9 +899,14 @@ var RelPg = /** @class */ (function (_super) {
      *
      * ### Examples
      * ```ts
-     * await RELPG.
+     * await RELPG.CREATETABLE("users","user_id serial PRIMARY KEY , user_name VARCHAR(50) UNIQUE NOT NULL")
      * ```
-     * > convert ``
+     * > convert `CREATE TABLE users (user_id serial PRIMARY KEY , user_name VARCHAR(50) UNIQUE NOT NULL);`
+     *
+     * ```ts
+     * await RELPG.CREATETABLE("users","user_id INT NOT NULL , user_name VARCHAR(50) UNIQUE NOT NULL , PRIMARY KEY (user_id)")
+     * ```
+     * > convert `CREATE TABLE users (user_id INT NOT NULL , user_name VARCHAR(50) UNIQUE NOT NULL , PRIMARY KEY (user_id));`
      *
      */
     RelPg.prototype.CREATETABLE = function (
@@ -818,13 +928,572 @@ var RelPg = /** @class */ (function (_super) {
     force) {
         if (force === void 0) { force = false; }
         return __awaiter(this, void 0, void 0, function () {
+            var rd, q, q;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.LISTTABLE(TableName)];
+                    case 1:
+                        rd = _a.sent();
+                        if (!(rd.rowCount > 0)) return [3 /*break*/, 6];
+                        if (!force) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this.DELETETABLE(TableName)];
+                    case 2:
+                        _a.sent();
+                        q = "CREATE TABLE ".concat(TableName, " (").concat(columns, ");");
+                        return [4 /*yield*/, this.Query(q)];
+                    case 3: return [2 /*return*/, _a.sent()];
+                    case 4:
+                        console.log("Table already exists");
+                        return [2 /*return*/, rd.rows];
+                    case 5: return [3 /*break*/, 8];
+                    case 6:
+                        q = "CREATE TABLE ".concat(TableName, " (").concat(columns, ");");
+                        return [4 /*yield*/, this.Query(q)];
+                    case 7: return [2 /*return*/, _a.sent()];
+                    case 8: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    //#endregion
+    //#region /// ALTERTABLE \\\
+    /**
+     * ### ALTERTABLE()
+     *
+     * Runs a ALTER query based on the given table
+     *
+     * It creates a ALTER string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     * ---
+     *
+     * ### Options
+     *
+     * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
+     * | :-                 | :-             | :-          | :-
+     * | **tableName**      | string         | `""`        | Existing table name
+     * | **action**         | string         | `""`        | Columns properties to be updated or more (exp:constraint)
+     *
+     *
+     *
+     * ---
+     *
+     * ### Examples
+     * ```ts
+     * await RELPG.ALTERTABLE("users","ADD COLUMN user_name VARCHAR(100) NOT NULL")
+     * ```
+     * > convert `ALTER TABLE users ADD COLUMN user_name VARCHAR(100) NOT NULL;`
+     *
+     */
+    RelPg.prototype.ALTERTABLE = function (
+    /**
+     *  `Table Name`
+     */
+    tableName, 
+    /**
+     *  `action`
+     */
+    action) {
+        return __awaiter(this, void 0, void 0, function () {
             var q;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        q = "CREATE TABLE ".concat(TableName, " (").concat(columns, ");");
-                        console.log(q);
+                        q = "ALTER TABLE ".concat(tableName, " ").concat(action, ";");
                         return [4 /*yield*/, this.Query(q)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    //#endregion
+    //#region /// ADDCOLUMN \\\
+    /**
+     * ### ADDCOL()
+     *
+     * #### Adds column to an existing table
+     *
+     * Runs a ALTER query based on the given table
+     *
+     * It creates a ALTER string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     * ---
+     *
+     * ### Options
+     *
+     * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
+     * | :-                 | :-             | :-          | :-
+     * | **tableName**      | string         | `""`        | Existing table name
+     * | **columnName**     | string         | `""`        | column name to add
+     * | **dataType**       | string         | `""`        | column data type to add
+     * | **constraint**     | string         | `""`        | column constraint to add
+     *
+     *
+     *
+     * ---
+     *
+     * ### Examples
+     * ```ts
+     * await RELPG.ADDCOL("users","user_name","VARCHAR(100)")
+     * ```
+     * > convert `ALTER TABLE users ADD COLUMN user_name `
+     *
+     */
+    RelPg.prototype.ADDCOL = function (
+    /**
+     *  `Table Name`
+     *
+     * Existing table name
+     */
+    tableName, 
+    /**
+     *  `columnName`
+     *
+     * column name to add
+     */
+    columnName, 
+    /**
+    *  `dataType`
+    *
+    * column data type to add
+    */
+    dataType, 
+    /**
+     *  `constraint`
+     *
+     * column constraint to add
+     */
+    constraint) {
+        if (constraint === void 0) { constraint = ""; }
+        return __awaiter(this, void 0, void 0, function () {
+            var actions;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        actions = "ADD COLUMN ".concat(columnName, " ").concat(dataType, " ").concat(constraint);
+                        return [4 /*yield*/, this.ALTERTABLE(tableName, actions)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    //#endregion
+    //#region /// DELCOLUMN \\\
+    /**
+     * ### DELCOL()
+     *
+     * #### Deletes an existing column of an existing table
+     *
+     * Runs a ALTER query based on the given table
+     *
+     * It creates a ALTER string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     * ---
+     *
+     * ### Options
+     *
+     * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
+     * | :-                 | :-             | :-          | :-
+     * | **tableName**      | string         | `""`        | Existing table name
+     * | **columnName**     | string         | `""`        | column name to delete
+     *
+     *
+     *
+     * ---
+     *
+     * ### Examples
+     * ```ts
+     * await RELPG.DELCOL("users","user_name")
+     * ```
+     * > convert `ALTER TABLE users DROP COLUMN user_name `
+     *
+     */
+    RelPg.prototype.DELCOL = function (
+    /**
+     *  `Table Name`
+     *
+     * Existing table name
+     */
+    tableName, 
+    /**
+     *  `columnName`
+     *
+     * column name to delete
+     */
+    columnName) {
+        return __awaiter(this, void 0, void 0, function () {
+            var actions;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        actions = "DROP COLUMN ".concat(columnName);
+                        return [4 /*yield*/, this.ALTERTABLE(tableName, actions)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    //#endregion
+    //#region /// RENAMECOLUMN \\\
+    /**
+     * ### RENAMECOL()
+     *
+     * #### change column name an existing column of an existing table
+     *
+     * Runs a ALTER query based on the given table
+     *
+     * It creates a ALTER string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     * ---
+     *
+     * ### Options
+     *
+     * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
+     * | :-                 | :-             | :-          | :-
+     * | **tableName**      | string         | `""`        | Existing table name
+     * | **columnName**     | string         | `""`        | column name to update
+     * | **newColumnName**  | string         | `""`        | column name to update
+     *
+     *
+     *
+     * ---
+     *
+     * ### Examples
+     * ```ts
+     * await RELPG.RENAMECOL("users","user_name","username")
+     * ```
+     * > convert `ALTER TABLE users RENAME COLUMN user_name TO username`
+     *
+     */
+    RelPg.prototype.RENAMECOL = function (
+    /**
+     *  `Table Name`
+     *
+     * Existing table name
+     */
+    tableName, 
+    /**
+     *  `columnName`
+     *
+     * column name to update
+     */
+    columnName, 
+    /**
+    *  `newColumnName`
+    *
+    * new column name to update
+    */
+    newColumnName) {
+        return __awaiter(this, void 0, void 0, function () {
+            var actions;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        actions = "RENAME COLUMN ".concat(columnName, " TO ").concat(newColumnName);
+                        return [4 /*yield*/, this.ALTERTABLE(tableName, actions)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    //#endregion
+    //#region /// RENAMETABLE \\\
+    /**
+     * ### RENAMETABLE()
+     *
+     * #### change table name of an existing table
+     *
+     * Runs a ALTER query based on the given table
+     *
+     * It creates a ALTER string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     * ---
+     *
+     * ### Options
+     *
+     * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
+     * | :-                 | :-             | :-          | :-
+     * | **tableName**      | string         | `""`        | Existing table name
+     * | **newTableName**   | string         | `""`        | table name to update
+     *
+     *
+     *
+     * ---
+     *
+     * ### Examples
+     * ```ts
+     * await RELPG.RENAMETABLE("users","accounts")
+     * ```
+     * > convert `ALTER TABLE users RENAME TO accounts`
+     *
+     */
+    RelPg.prototype.RENAMETABLE = function (
+    /**
+     *  `Table Name`
+     *
+     * Existing table name
+     */
+    tableName, 
+    /**
+     *  `newTableName`
+     *
+     * table name to update
+     */
+    newTableName) {
+        return __awaiter(this, void 0, void 0, function () {
+            var actions;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        actions = "RENAME TO ".concat(newTableName);
+                        return [4 /*yield*/, this.ALTERTABLE(tableName, actions)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    //#endregion
+    //#region /// ALTERCOLUMN \\\
+    /**
+     * ### ALTERCOL()
+     *
+     * Runs a ALTER query based on the given table
+     *
+     * It creates a ALTER string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     * ---
+     *
+     * ### Options
+     *
+     * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
+     * | :-                 | :-             | :-          | :-
+     * | **tableName**      | string         | `""`        | Existing table name
+     * | **columnName**     | string         | `""`        | column name to update
+     * | **action**         | string         | `""`        | Columns properties to be updated or more (exp:constraint)
+     *
+     *
+     *
+     * ---
+     *
+     * ### Examples
+     * ```ts
+     * await RELPG.ALTERCOL("users","user_name","TYPE VARCHAR")
+     * ```
+     * > convert `ALTER TABLE users ALTER COLUMN user_name TYPE VARCHAR`
+     *
+     */
+    RelPg.prototype.ALTERCOL = function (
+    /**
+     *  `Table Name`
+     */
+    tableName, 
+    /**
+     *  `columnName`
+     *
+     * column name to update
+     */
+    columnName, 
+    /**
+     *  `action`
+     */
+    action) {
+        return __awaiter(this, void 0, void 0, function () {
+            var actions;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        actions = "ALTER COLUMN ".concat(columnName, " ").concat(action);
+                        return [4 /*yield*/, this.ALTERTABLE(tableName, actions)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    //#endregion
+    //#region /// ALTERCOLUMNTYPE \\\
+    /**
+     * ### COLTYPE()
+     *
+     * #### Changes columun datatype
+     *
+     * Runs a ALTER query based on the given table
+     *
+     * It creates a ALTER string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     * ---
+     *
+     * ### Options
+     *
+     * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
+     * | :-                 | :-             | :-          | :-
+     * | **tableName**      | string         | `""`        | Existing table name
+     * | **columnName**     | string         | `""`        | column name to update
+     * | **dataType**       | string         | `""`        | Columns data type to be updated
+     * | **expression**     | string         | `""`        | expression for  USING tag
+     *
+     *
+     *
+     *
+     * ---
+     *
+     * ### Examples
+     * ```ts
+     * // username : VARCHAR
+     * await RELPG.COLTYPE("users","user_name","TEXT")
+     * ```
+     * > convert `ALTER TABLE users ALTER COLUMN user_name TYPE VARCHAR`
+     *
+     * ### NOTE
+     *
+     * The `USING` clause specifies an expression that allows you to convert the old values to the new ones.
+     *
+     * ```ts
+     * // user_id : int4
+     * await RELPG.COLTYPE("users","user_id","INT") // ERROR
+     * ```
+     *
+     * ERROR:  column "user_id" cannot be cast automatically to type integer
+     *
+     * HINT:  You might need to specify "USING user_id::integer".
+     *
+     * ```ts
+     * // user_id : int4
+     * await RELPG.COLTYPE("users","user_id","INT","user_id::integer") // TRUE
+     * ```
+     * > convert `ALTER TABLE users ALTER COLUMN user_id TYPE INT USING asset_no::integer;`
+     *
+     */
+    RelPg.prototype.COLTYPE = function (
+    /**
+     *  `Table Name`
+     */
+    tableName, 
+    /**
+     *  `columnName`
+     *
+     * column name to update
+     */
+    columnName, 
+    /**
+    *  `dataType`
+    *
+    * column data type to update
+    */
+    dataType, 
+    /**
+     *  `expression`
+     *
+     *  expression for USING tag
+     */
+    expression) {
+        if (expression === void 0) { expression = ""; }
+        return __awaiter(this, void 0, void 0, function () {
+            var exp, actions;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        exp = expression === "" ? "" : "USING ".concat(expression);
+                        actions = "TYPE ".concat(dataType, " ").concat(exp);
+                        return [4 /*yield*/, this.ALTERCOL(tableName, columnName, actions)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    //#endregion
+    //#region /// ALTERCOLUMNSETDEFAULT \\\
+    /**
+     * ### COLDEFAULT()
+     *
+     * #### Addes or Changes columun default value
+     *
+     * Runs a ALTER query based on the given table
+     *
+     * It creates a ALTER string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     * ---
+     *
+     * ### Options
+     *
+     * | OPTION             | TYPE            | DEFAULT     | DESCRIPTION
+     * | :-                 | :-              | :-          | :-
+     * | **tableName**      | string          | `""`        | Existing table name
+     * | **columnName**     | string          | `""`        | column name to update
+     * | **Default**        | string \| number | `""`        | Column default value to update
+     *
+     *
+     *
+     *
+     * ---
+     *
+     * ### Examples
+     * ```ts
+     *
+     * await RELPG.COLDEFAULT("users","user_name","'berk'")
+     * ```
+     * > convert `ALTER TABLE users ALTER COLUMN user_name SET DEFAULT 'berk'`
+     *
+     * ##  NOTE :
+     * Postgresql is sensitive to default values. If the any postgresql function will be used, write it directly,
+     *
+     * but if the default value will be a string expression, write it in ' '
+     *
+     * ```ts
+     * // string value
+     * await RELPG.COLDEFAULT("users","user_name","'berk'") // TRUE
+     *
+     * await RELPG.COLDEFAULT("users","user_name","berk")   // FALSE
+     *
+     * // the any postgresql function
+     * await RELPG.COLDEFAULT("users","user_name","CURRENT_DATE")   // TRUE
+     *
+     * await RELPG.COLDEFAULT("users","user_name","'CURRENT_DATE'") // FALSE
+     
+     * ```
+     */
+    RelPg.prototype.COLDEFAULT = function (
+    /**
+     *  `Table Name`
+     */
+    tableName, 
+    /**
+     *  `columnName`
+     *
+     * column name to update
+     */
+    columnName, 
+    /**
+    *  `Default`
+    *
+    * column default value to update
+    *
+    * ---
+    *
+    * ##  NOTE :
+    * Postgresql is sensitive to default values. If the any postgresql function will be used, write it directly,
+    *
+    * but if the default value will be a string expression, write it in ' '
+    *
+    * ```ts
+    * // string value
+    * await RELPG.COLDEFAULT("users","user_name","'berk'") // TRUE
+    *
+    * await RELPG.COLDEFAULT("users","user_name","berk")   // FALSE
+    *
+    * // the any postgresql function
+    * await RELPG.COLDEFAULT("users","user_name","CURRENT_DATE")   // TRUE
+    *
+    * await RELPG.COLDEFAULT("users","user_name","'CURRENT_DATE'") // FALSE
+    *
+    * ```
+    */
+    Default) {
+        return __awaiter(this, void 0, void 0, function () {
+            var actions;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        actions = "SET DEFAULT ".concat(Default);
+                        return [4 /*yield*/, this.ALTERCOL(tableName, columnName, actions)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });

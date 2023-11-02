@@ -2,7 +2,6 @@ import { Pool } from "pg";
 
 
 
-
 //#region /// RELPG CLASS \\\
 abstract class PG {
     /**
@@ -153,12 +152,12 @@ export class RelPg extends PG {
         this.db = this.DBCONNECT();
     }
 
-//#region /// CREATE SYMBOL FUNCTIONS \\\
+    //#region /// CREATE SYMBOL FUNCTIONS \\\
 
-/**
- *  For queries, they create references to query values ​​with $
- */
-    private CREATE$(num:number) {
+    /**
+     *  For queries, they create references to query values ​​with $
+     */
+    private CREATE$(num: number) {
         let b = ""
         for (let i = 0; i < num; i++) {
             i !== 0 ? b += ",$" + (i + 1) : b += "$" + 1
@@ -167,7 +166,7 @@ export class RelPg extends PG {
         return b
 
     }
-    private CREATEEQUAL$(titles:string[]) {
+    private CREATEEQUAL$(titles: string[]) {
         let b = ""
         for (let i = 0; i < titles.length; i++) {
             i !== 0 ? b += "," + titles[i] + "=$" + (i + 1) : b += titles[i] + "=$" + 1
@@ -176,7 +175,7 @@ export class RelPg extends PG {
         return b
 
     }
-    private CREATEEQUAL$AND(titles:string[],plus:number=1) {
+    private CREATEEQUAL$AND(titles: string[], plus: number = 1) {
         let b = ""
         for (let i = 0; i < titles.length; i++) {
             i !== 0 ? b += " AND " + titles[i] + "=$" + (i + plus) : b += titles[i] + "=$" + plus
@@ -185,9 +184,9 @@ export class RelPg extends PG {
         return b
 
     }
-//#endregion
+    //#endregion
 
-//#region /// QUERY \\\
+    //#region /// QUERY \\\
     /**
     * ### Query()
     * 
@@ -223,12 +222,12 @@ export class RelPg extends PG {
         })
 
     }
-//#endregion
+    //#endregion
 
 
-///////////////////// CRUD METHODS \\\\\\\\\\\\\\\\\\\\\\\\
+    ///////////////////// CRUD METHODS \\\\\\\\\\\\\\\\\\\\\\\\
 
-//#region /// LIST \\\
+    //#region /// LIST \\\
     /**
      * ### LIST()
      * 
@@ -281,7 +280,7 @@ export class RelPg extends PG {
          * 
          * Note : The contents are a string separated by commas
          */
-        titles: string="*",
+        titles: string = "*",
         /**
          *  `where`
          * 
@@ -289,28 +288,28 @@ export class RelPg extends PG {
          * 
          * Note: this value also requires 'values' to be filled in
          */
-        where: string="",
+        where: string = "",
         /**
          *  `values`
          * 
          * filter values
          */
-        values: (string | number)[]=[], 
-         /**
-         *  `more`
-         * 
-         * optional query continuation
-         */
-        more: string="") {
-        if (where !=="" && values.length>0) {
-            more =`WHERE ${this.CREATEEQUAL$AND(where.split(","))} `+ more
-        } 
+        values: (string | number)[] = [],
+        /**
+        *  `more`
+        * 
+        * optional query continuation
+        */
+        more: string = "") {
+        if (where !== "" && values.length > 0) {
+            more = `WHERE ${this.CREATEEQUAL$AND(where.split(","))} ` + more
+        }
         const q: string = `SELECT ${titles} FROM ${tableName} ${more}`
-        return await this.Query(q,values)
+        return await this.Query(q, values)
     }
-//#endregion
+    //#endregion
 
-//#region /// ADD \\\
+    //#region /// ADD \\\
     /**
      * ### ADD()
      * 
@@ -327,7 +326,7 @@ export class RelPg extends PG {
      * | **tableName**      | string                 | `""`            | Table name to add
      * | **titles**         | string                 | `""`            | Table headers of the values ​​to be added
      * | **values**         | (string \| number)[]   | `[]`            | Query reference values
-     * | **more**           | string                 | `RETURNING *;`  | Query continuation if any
+     * | **more**           | string                 | `RETURNING *;`  | Query continuation if any 
      * 
      * 
      * 
@@ -340,7 +339,7 @@ export class RelPg extends PG {
      * > convert `INSERT INTO users (user_name,user_surname) VALUES ($1,$2) RETURNING *;`
      * 
      */
-    async ADD( 
+    async ADD(
         /**
          *  `Table Name`
          */
@@ -352,27 +351,27 @@ export class RelPg extends PG {
          * 
          * Note : The contents are a string separated by commas
          */
-        titles: string="", 
+        titles: string,
         /**
          *  `values`
          * 
          * header values ​​to add
          */
-        values: (string | number)[]=[], 
-         /**
-         *  `more`
-         * 
-         * optional query continuation
-         */
-        more: string="RETURNING *;") {
+        values: (string | number)[],
+        /**
+        *  `more`
+        * 
+        * optional query continuation
+        */
+        more: string = "RETURNING *;") {
 
-        const q:string = `INSERT INTO ${tableName} (${titles}) VALUES (${this.CREATE$(titles.split(",").length)}) ${more}`
-        return await this.Query(q,values)
+        const q: string = `INSERT INTO ${tableName} (${titles}) VALUES (${this.CREATE$(titles.split(",").length)}) ${more}`
+        return await this.Query(q, values)
 
     }
-//#endregion
+    //#endregion
 
-//#region /// UPDATE \\\
+    //#region /// UPDATE \\\
     /**
      * ### UPDATE()
      * 
@@ -413,7 +412,7 @@ export class RelPg extends PG {
      * > convert `UPDATE users SET user_name=$1,user_surname=$2 WHERE uid=$3 AND user_surname=$4  RETURNING *;`
      * 
      */
-    async UPDATE( 
+    async UPDATE(
         /**
          *  `Table Name`
          */
@@ -427,7 +426,7 @@ export class RelPg extends PG {
          * 
          * Note : The contents are a string separated by commas
          */
-        titles: string="", 
+        titles: string,
         /**
          *  `where`
          * 
@@ -437,7 +436,7 @@ export class RelPg extends PG {
          * 
          * Note: The contents are a string separated by commas
          */
-        where: string="", 
+        where: string,
         /**
          *  `values`
          * 
@@ -460,24 +459,24 @@ export class RelPg extends PG {
          * // ["aaa-bbb-ccc-ddd","Berk"] -> wrong use
          * ```
          */
-        values: (string | number)[]=[], 
-         /**
-         *  `more`
-         * 
-         * optional query continuation
-         */
-        more: string="RETURNING *;") {
+        values: (string | number)[],
+        /**
+        *  `more`
+        * 
+        * optional query continuation
+        */
+        more: string = "RETURNING *;") {
 
-            const t = titles.split(",")
-            const w = where.split(",")
-            const q:string = `UPDATE ${tableName} SET ${this.CREATEEQUAL$(t)} WHERE ${this.CREATEEQUAL$AND(w,t.length+1)}  ${more}`
-            return await this.Query(q, values)
-    
+        const t = titles.split(",")
+        const w = where.split(",")
+        const q: string = `UPDATE ${tableName} SET ${this.CREATEEQUAL$(t)} WHERE ${this.CREATEEQUAL$AND(w, t.length + 1)}  ${more}`
+        return await this.Query(q, values)
+
 
     }
-//#endregion
+    //#endregion
 
-//#region /// DEL \\\
+    //#region /// DEL \\\
     /**
      * ### DEL()
      * 
@@ -523,7 +522,7 @@ export class RelPg extends PG {
      * > convert `DELETE FROM users WHERE user_name=$1 AND user_surname=$2 RETURNING *;`
      * 
      */
-     async DEL( 
+    async DEL(
         /**
          *  `Table Name`
          */
@@ -537,37 +536,37 @@ export class RelPg extends PG {
          * 
          * Note: The contents are a string separated by commas
          */
-        where: string="", 
+        where: string = "",
         /**
          *  `values`
          * 
          * header values ​​to update
          * 
          */
-        values: (string | number)[]=[], 
-         /**
-         *  `more`
-         * 
-         * optional query continuation
-         */
-        more: string="RETURNING *;") {
+        values: (string | number)[] = [],
+        /**
+        *  `more`
+        * 
+        * optional query continuation
+        */
+        more: string = "RETURNING *;") {
 
-            if (where !=="" && values.length>0) {
-                const w = where.split(",")
-                more =`WHERE ${this.CREATEEQUAL$AND(w)} `+ more
-            } 
-            const q = `DELETE FROM ${tableName} ${more}`
-            return await this.Query(q,values)
-    
+        if (where !== "" && values.length > 0) {
+            const w = where.split(",")
+            more = `WHERE ${this.CREATEEQUAL$AND(w)} ` + more
+        }
+        const q = `DELETE FROM ${tableName} ${more}`
+        return await this.Query(q, values)
+
 
     }
-//#endregion
+    //#endregion
 
 
 
-///////////////////// DATABASE METHODS \\\\\\\\\\\\\\\\\\\\\\\\
+    ///////////////////// DATABASE METHODS \\\\\\\\\\\\\\\\\\\\\\\\
 
-//#region /// LISTDB \\\
+    //#region /// LISTDB \\\
     /**
      * ### LISTDB()
      * 
@@ -603,14 +602,14 @@ export class RelPg extends PG {
          * 
          * filter value
          */
-        value: string ="", 
+        value: string = "",
         /**
          *  `Titles`
          * 
          * NOTE: takes a single value
          * 
          */
-        titles: string="datname",
+        titles: string = "datname",
         /**
          *  `where`
          * 
@@ -620,14 +619,14 @@ export class RelPg extends PG {
          * 
          * Note: this value also requires 'values' to be filled in
          */
-        where: string ="datname",
-        ) {
+        where: string = "datname",
+    ) {
         const q: string = `SELECT ${titles} FROM pg_catalog.pg_database WHERE ${where} = '${value}'`
         return await this.Query(q)
     }
-//#endregion
+    //#endregion
 
-//#region /// DELETEDB \\\
+    //#region /// DELETEDB \\\
     /**
      * ### DELETEDB()
      * 
@@ -659,15 +658,15 @@ export class RelPg extends PG {
          *  `Database Name`
          */
         DBName: string
-        ) {
+    ) {
 
-            const q = `DROP DATABASE IF EXISTS ${DBName}`
-            return await this.Query(q)
+        const q = `DROP DATABASE IF EXISTS ${DBName}`
+        return await this.Query(q)
 
     }
-//#endregion
+    //#endregion
 
-//#region /// CREATEDB \\\
+    //#region /// CREATEDB \\\
     /**
      * ### CREATEDB()
      * 
@@ -708,32 +707,32 @@ export class RelPg extends PG {
          * NOTE : This action will delete all data in the database.
          */
         force: boolean = false
-        ) {
+    ) {
 
+        const rd: any = await this.LISTDB(DBName)
+        if (rd.rowCount > 0) {
             if (force) {
                 await this.DELETEDB(DBName)
                 const q = `CREATE DATABASE ${DBName}`
                 return await this.Query(q)
-             } else{
-                 const rd:any = await this.LISTDB(DBName)
-                 if (rd.rowCount>0) {
-                     console.log("Database already exists")
-                     return rd.rows
-                 } else {
-                    
-                     const q = `CREATE DATABASE ${DBName}`
-                     return await this.Query(q)
-                 }
-                 
-             }
+            } else {
+                console.log("Database already exists")
+                return rd.rows
+            }
+        } else {
+            const q = `CREATE DATABASE ${DBName}`
+            return await this.Query(q)
+        }
+
+
 
     }
-//#endregion
+    //#endregion
 
 
-///////////////////// TABLE METHODS \\\\\\\\\\\\\\\\\\\\\\\\
+    ///////////////////// TABLE METHODS \\\\\\\\\\\\\\\\\\\\\\\\
 
-//#region /// LISTTABLE \\\
+    //#region /// LISTTABLE \\\
     /**
      * ### LISTTABLE()
      * 
@@ -766,22 +765,62 @@ export class RelPg extends PG {
          *  `Table Name`
          */
         tableName: string,
-         /**
-         *  `Titles`
-         * 
-         * Note : The contents are a string separated by commas
-         */
-         titles: string="tablename"
-        ) {
-            // ${force?"":"IF NOT EXISTS"} 
-             const q = `SELECT ${titles} FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema' AND tablename='${tableName}';`
-             return await this.Query(q)
+        /**
+        *  `Titles`
+        * 
+        * Note : The contents are a string separated by commas
+        */
+        titles: string = "tablename"
+    ) {
+        // ${force?"":"IF NOT EXISTS"} 
+        const q = `SELECT ${titles} FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema' AND tablename='${tableName}';`
+        return await this.Query(q)
     }
-//#endregion
+    //#endregion
 
+    //#region /// DELETETABLE \\\
+    /**
+     * ### DELETETABLE()
+     * 
+     * Runs a DELETE query based on the given table name
+     * 
+     * It creates a DELETE string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     * 
+     * 
+     * ## WARNING : this function will deleted all datas of table
+     * 
+     * ---
+     * 
+     * ### Options
+     * 
+     * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
+     * | :-                 | :-             | :-          | :-
+     * | **tableName**      | string         | `""`        | Table name to be deleted
+     * 
+     * 
+     * 
+     * ---
+     * 
+     * ### Examples
+     * ```ts
+     * await RELPG.DELETETABLE("users")
+     * ```
+     * > convert `DELETE DROP users;`
+     * 
+     */
+    async DELETETABLE(
+        /**
+         *  `Table Name`
+         */
+        TableName: string
+    ) {
+        const q = `DROP TABLE ${TableName};`
+        return await this.Query(q)
+    }
+    //#endregion
 
-
-//#region /// CREATETABLE \\\
+    //#region /// CREATETABLE \\\
     /**
      * ### CREATETABLE()
      * 
@@ -796,7 +835,8 @@ export class RelPg extends PG {
      * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
      * | :-                 | :-             | :-          | :-
      * | **tableName**      | string         | `""`        | Table name to be created
-     * | **force**          | boolean        | `false`     | Force database creation
+     * | **columns**        | string         | `""`        | Columns properties to be created
+     * | **force**          | boolean        | `false`     | Force table creation
      * 
      * 
      * 
@@ -804,9 +844,14 @@ export class RelPg extends PG {
      * 
      * ### Examples
      * ```ts
-     * await RELPG.
+     * await RELPG.CREATETABLE("users","user_id serial PRIMARY KEY , user_name VARCHAR(50) UNIQUE NOT NULL")
      * ```
-     * > convert ``
+     * > convert `CREATE TABLE users (user_id serial PRIMARY KEY , user_name VARCHAR(50) UNIQUE NOT NULL);`
+     * 
+     * ```ts
+     * await RELPG.CREATETABLE("users","user_id INT NOT NULL , user_name VARCHAR(50) UNIQUE NOT NULL , PRIMARY KEY (user_id)")
+     * ```
+     * > convert `CREATE TABLE users (user_id INT NOT NULL , user_name VARCHAR(50) UNIQUE NOT NULL , PRIMARY KEY (user_id));`
      * 
      */
     async CREATETABLE(
@@ -814,10 +859,10 @@ export class RelPg extends PG {
          *  `Table Name`
          */
         TableName: string,
-         /**
-         *  `Columns`
-         */
-         columns: string,
+        /**
+        *  `Columns`
+        */
+        columns: string,
         /**
          *  `force status`
          * 
@@ -826,14 +871,518 @@ export class RelPg extends PG {
          * NOTE : This action will delete all data in the table.
          */
         force: boolean = false
-        ) {
-            // ${force?"":"IF NOT EXISTS"} 
-             const q = `CREATE TABLE ${TableName} (${columns});`
-             console.log(q)
-             return await this.Query(q)
-    }
-//#endregion
+    ) {
 
+        const rd: any = await this.LISTTABLE(TableName)
+        if (rd.rowCount > 0) {
+            if (force) {
+                await this.DELETETABLE(TableName)
+                const q = `CREATE TABLE ${TableName} (${columns});`
+                return await this.Query(q)
+            } else {
+                console.log("Table already exists")
+                return rd.rows
+            }
+        } else {
+            const q = `CREATE TABLE ${TableName} (${columns});`
+            return await this.Query(q)
+        }
+
+
+    }
+    //#endregion
+
+    //#region /// ALTERTABLE \\\
+    /**
+     * ### ALTERTABLE()
+     * 
+     * Runs a ALTER query based on the given table 
+     * 
+     * It creates a ALTER string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     * ---
+     * 
+     * ### Options
+     * 
+     * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
+     * | :-                 | :-             | :-          | :-
+     * | **tableName**      | string         | `""`        | Existing table name
+     * | **action**         | string         | `""`        | Columns properties to be updated or more (exp:constraint)
+     * 
+     * 
+     * 
+     * ---
+     * 
+     * ### Examples
+     * ```ts
+     * await RELPG.ALTERTABLE("users","ADD COLUMN user_name VARCHAR(100) NOT NULL")
+     * ```
+     * > convert `ALTER TABLE users ADD COLUMN user_name VARCHAR(100) NOT NULL;`
+     * 
+     */
+    async ALTERTABLE(
+        /**
+         *  `Table Name`
+         */
+        tableName: string,
+        /**
+         *  `action`
+         */
+        action: string,
+    ) {
+        // ${force?"":"IF NOT EXISTS"} 
+        const q = `ALTER TABLE ${tableName} ${action};`
+        return await this.Query(q)
+    }
+    //#endregion
+
+    //#region /// ADDCOLUMN \\\
+    /**
+     * ### ADDCOL()
+     * 
+     * #### Adds column to an existing table
+     * 
+     * Runs a ALTER query based on the given table 
+     * 
+     * It creates a ALTER string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     * ---
+     * 
+     * ### Options
+     * 
+     * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
+     * | :-                 | :-             | :-          | :-
+     * | **tableName**      | string         | `""`        | Existing table name
+     * | **columnName**     | string         | `""`        | column name to add
+     * | **dataType**       | string         | `""`        | column data type to add
+     * | **constraint**     | string         | `""`        | column constraint to add
+     * 
+     * 
+     * 
+     * ---
+     * 
+     * ### Examples
+     * ```ts
+     * await RELPG.ADDCOL("users","user_name","VARCHAR(100)")
+     * ```
+     * > convert `ALTER TABLE users ADD COLUMN user_name `
+     * 
+     */
+    async ADDCOL(
+        /**
+         *  `Table Name`
+         * 
+         * Existing table name
+         */
+        tableName: string,
+        /**
+         *  `columnName`
+         * 
+         * column name to add
+         */
+        columnName: string,
+        /**
+        *  `dataType`
+        * 
+        * column data type to add
+        */
+        dataType: string,
+        /**
+         *  `constraint`
+         * 
+         * column constraint to add
+         */
+        constraint: string="",
+    ) {
+        const actions = `ADD COLUMN ${columnName} ${dataType} ${constraint}`
+        return await this.ALTERTABLE(tableName, actions)
+    }
+    //#endregion
+
+    //#region /// DELCOLUMN \\\
+    /**
+     * ### DELCOL()
+     * 
+     * #### Deletes an existing column of an existing table
+     * 
+     * Runs a ALTER query based on the given table 
+     * 
+     * It creates a ALTER string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     * ---
+     * 
+     * ### Options
+     * 
+     * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
+     * | :-                 | :-             | :-          | :-
+     * | **tableName**      | string         | `""`        | Existing table name
+     * | **columnName**     | string         | `""`        | column name to delete
+     * 
+     * 
+     * 
+     * ---
+     * 
+     * ### Examples
+     * ```ts
+     * await RELPG.DELCOL("users","user_name")
+     * ```
+     * > convert `ALTER TABLE users DROP COLUMN user_name `
+     * 
+     */
+    async DELCOL(
+        /**
+         *  `Table Name`
+         * 
+         * Existing table name
+         */
+        tableName: string,
+        /**
+         *  `columnName`
+         * 
+         * column name to delete
+         */
+        columnName: string
+    ) {
+        const actions = `DROP COLUMN ${columnName}`
+        return await this.ALTERTABLE(tableName, actions)
+    }
+    //#endregion
+
+    //#region /// RENAMECOLUMN \\\
+    /**
+     * ### RENAMECOL()
+     * 
+     * #### change column name an existing column of an existing table
+     * 
+     * Runs a ALTER query based on the given table 
+     * 
+     * It creates a ALTER string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     * ---
+     * 
+     * ### Options
+     * 
+     * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
+     * | :-                 | :-             | :-          | :-
+     * | **tableName**      | string         | `""`        | Existing table name
+     * | **columnName**     | string         | `""`        | column name to update
+     * | **newColumnName**  | string         | `""`        | column name to update
+     * 
+     * 
+     * 
+     * ---
+     * 
+     * ### Examples
+     * ```ts
+     * await RELPG.RENAMECOL("users","user_name","username")
+     * ```
+     * > convert `ALTER TABLE users RENAME COLUMN user_name TO username`
+     * 
+     */
+    async RENAMECOL(
+        /**
+         *  `Table Name`
+         * 
+         * Existing table name
+         */
+        tableName: string,
+        /**
+         *  `columnName`
+         * 
+         * column name to update
+         */
+        columnName: string,
+        /**
+        *  `newColumnName`
+        * 
+        * new column name to update
+        */
+        newColumnName: string
+    ) {
+        const actions = `RENAME COLUMN ${columnName} TO ${newColumnName}`
+        return await this.ALTERTABLE(tableName, actions)
+    }
+    //#endregion
+
+    //#region /// RENAMETABLE \\\
+    /**
+     * ### RENAMETABLE()
+     * 
+     * #### change table name of an existing table
+     * 
+     * Runs a ALTER query based on the given table 
+     * 
+     * It creates a ALTER string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     * ---
+     * 
+     * ### Options
+     * 
+     * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
+     * | :-                 | :-             | :-          | :-
+     * | **tableName**      | string         | `""`        | Existing table name
+     * | **newTableName**   | string         | `""`        | table name to update
+     * 
+     * 
+     * 
+     * ---
+     * 
+     * ### Examples
+     * ```ts
+     * await RELPG.RENAMETABLE("users","accounts")
+     * ```
+     * > convert `ALTER TABLE users RENAME TO accounts`
+     * 
+     */
+    async RENAMETABLE(
+        /**
+         *  `Table Name`
+         * 
+         * Existing table name
+         */
+        tableName: string,
+        /**
+         *  `newTableName`
+         * 
+         * table name to update
+         */
+        newTableName: string
+    ) {
+        const actions = `RENAME TO ${newTableName}`
+        return await this.ALTERTABLE(tableName, actions)
+    }
+    //#endregion
+
+    //#region /// ALTERCOLUMN \\\
+    /**
+     * ### ALTERCOL()
+     * 
+     * Runs a ALTER query based on the given table 
+     * 
+     * It creates a ALTER string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     * ---
+     * 
+     * ### Options
+     * 
+     * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
+     * | :-                 | :-             | :-          | :-
+     * | **tableName**      | string         | `""`        | Existing table name
+     * | **columnName**     | string         | `""`        | column name to update
+     * | **action**         | string         | `""`        | Columns properties to be updated or more (exp:constraint)
+     * 
+     * 
+     * 
+     * ---
+     * 
+     * ### Examples
+     * ```ts
+     * await RELPG.ALTERCOL("users","user_name","TYPE VARCHAR")
+     * ```
+     * > convert `ALTER TABLE users ALTER COLUMN user_name TYPE VARCHAR`
+     * 
+     */
+    async ALTERCOL(
+        /**
+         *  `Table Name`
+         */
+        tableName: string,
+        /**
+         *  `columnName`
+         * 
+         * column name to update
+         */
+        columnName: string,
+        /**
+         *  `action`
+         */
+        action: string,
+    ) {
+
+        const actions = `ALTER COLUMN ${columnName} ${action}`
+        return await this.ALTERTABLE(tableName, actions)
+    }
+    //#endregion
+
+    //#region /// ALTERCOLUMNTYPE \\\
+    /**
+     * ### COLTYPE()
+     * 
+     * #### Changes columun datatype
+     * 
+     * Runs a ALTER query based on the given table 
+     * 
+     * It creates a ALTER string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     * ---
+     * 
+     * ### Options
+     * 
+     * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
+     * | :-                 | :-             | :-          | :-
+     * | **tableName**      | string         | `""`        | Existing table name
+     * | **columnName**     | string         | `""`        | column name to update
+     * | **dataType**       | string         | `""`        | Columns data type to be updated
+     * | **expression**     | string         | `""`        | expression for  USING tag
+     * 
+     * 
+     * 
+     * 
+     * ---
+     * 
+     * ### Examples
+     * ```ts
+     * // username : VARCHAR
+     * await RELPG.COLTYPE("users","user_name","TEXT")
+     * ```
+     * > convert `ALTER TABLE users ALTER COLUMN user_name TYPE VARCHAR`
+     * 
+     * ### NOTE 
+     * 
+     * The `USING` clause specifies an expression that allows you to convert the old values to the new ones.
+     * 
+     * ```ts
+     * // user_id : int4
+     * await RELPG.COLTYPE("users","user_id","INT") // ERROR
+     * ```
+     * 
+     * ERROR:  column "user_id" cannot be cast automatically to type integer
+     * 
+     * HINT:  You might need to specify "USING user_id::integer".
+     * 
+     * ```ts
+     * // user_id : int4
+     * await RELPG.COLTYPE("users","user_id","INT","user_id::integer") // TRUE
+     * ```
+     * > convert `ALTER TABLE users ALTER COLUMN user_id TYPE INT USING asset_no::integer;`
+     * 
+     */
+    async COLTYPE(
+        /**
+         *  `Table Name`
+         */
+        tableName: string,
+        /**
+         *  `columnName`
+         * 
+         * column name to update
+         */
+        columnName: string,
+        /**
+        *  `dataType`
+        * 
+        * column data type to update
+        */
+        dataType: string,
+        /**
+         *  `expression`
+         * 
+         *  expression for USING tag
+         */
+        expression: string = "",
+    ) {
+
+        const exp = expression === "" ? `` : `USING ${expression}`
+        const actions = `TYPE ${dataType} ${exp}`
+
+        return await this.ALTERCOL(tableName, columnName, actions)
+    }
+    //#endregion
+
+    //#region /// ALTERCOLUMNSETDEFAULT \\\
+    /**
+     * ### COLDEFAULT()
+     * 
+     * #### Addes or Changes columun default value
+     * 
+     * Runs a ALTER query based on the given table 
+     * 
+     * It creates a ALTER string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     * ---
+     * 
+     * ### Options
+     * 
+     * | OPTION             | TYPE            | DEFAULT     | DESCRIPTION
+     * | :-                 | :-              | :-          | :-
+     * | **tableName**      | string          | `""`        | Existing table name
+     * | **columnName**     | string          | `""`        | column name to update
+     * | **Default**        | string \| number | `""`        | Column default value to update
+     * 
+     * 
+     * 
+     * 
+     * ---
+     * 
+     * ### Examples
+     * ```ts
+     * 
+     * await RELPG.COLDEFAULT("users","user_name","'berk'")
+     * ```
+     * > convert `ALTER TABLE users ALTER COLUMN user_name SET DEFAULT 'berk'`
+     * 
+     * ##  NOTE :
+     * Postgresql is sensitive to default values. If the any postgresql function will be used, write it directly, 
+     * 
+     * but if the default value will be a string expression, write it in ' '
+     * 
+     * ```ts
+     * // string value
+     * await RELPG.COLDEFAULT("users","user_name","'berk'") // TRUE
+     * 
+     * await RELPG.COLDEFAULT("users","user_name","berk")   // FALSE
+     * 
+     * // the any postgresql function
+     * await RELPG.COLDEFAULT("users","user_name","CURRENT_DATE")   // TRUE
+     * 
+     * await RELPG.COLDEFAULT("users","user_name","'CURRENT_DATE'") // FALSE
+     
+     * ```
+     */
+    async COLDEFAULT(
+        /**
+         *  `Table Name`
+         */
+        tableName: string,
+        /**
+         *  `columnName`
+         * 
+         * column name to update
+         */
+        columnName: string,
+        /**
+        *  `Default`
+        * 
+        * column default value to update
+        * 
+        * ---
+        * 
+        * ##  NOTE :
+        * Postgresql is sensitive to default values. If the any postgresql function will be used, write it directly, 
+        * 
+        * but if the default value will be a string expression, write it in ' '
+        * 
+        * ```ts
+        * // string value
+        * await RELPG.COLDEFAULT("users","user_name","'berk'") // TRUE
+        * 
+        * await RELPG.COLDEFAULT("users","user_name","berk")   // FALSE
+        * 
+        * // the any postgresql function
+        * await RELPG.COLDEFAULT("users","user_name","CURRENT_DATE")   // TRUE
+        * 
+        * await RELPG.COLDEFAULT("users","user_name","'CURRENT_DATE'") // FALSE
+        * 
+        * ```
+        */
+        Default: string | number
+    ) {
+
+        const actions = `SET DEFAULT ${Default}`
+
+        return await this.ALTERCOL(tableName, columnName, actions)
+    }
+    //#endregion
 
 
 }
