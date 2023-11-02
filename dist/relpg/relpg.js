@@ -805,6 +805,10 @@ var RelPg = /** @class */ (function (_super) {
      */
     TableName, 
     /**
+    *  `Columns`
+    */
+    columns, 
+    /**
      *  `force status`
      *
      * If the "force" value is true, overwrites even if the table name to be created exists
@@ -816,9 +820,13 @@ var RelPg = /** @class */ (function (_super) {
         return __awaiter(this, void 0, void 0, function () {
             var q;
             return __generator(this, function (_a) {
-                q = "CREATE TABLE ".concat(force ? "" : "[IF NOT EXISTS]", " ").concat(TableName);
-                console.log(q);
-                return [2 /*return*/];
+                switch (_a.label) {
+                    case 0:
+                        q = "CREATE TABLE ".concat(TableName, " (").concat(columns, ");");
+                        console.log(q);
+                        return [4 /*yield*/, this.Query(q)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
             });
         });
     };

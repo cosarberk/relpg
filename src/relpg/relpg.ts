@@ -733,6 +733,53 @@ export class RelPg extends PG {
 
 ///////////////////// TABLE METHODS \\\\\\\\\\\\\\\\\\\\\\\\
 
+//#region /// LISTTABLE \\\
+    /**
+     * ### LISTTABLE()
+     * 
+     * Runs a SELECT query based on the given table 
+     * 
+     * It creates a SELECT string based on the parameter it receives and queries it with Query function.
+     * > Return `result`
+     * ---
+     * 
+     * ### Options
+     * 
+     * | OPTION             | TYPE           | DEFAULT     | DESCRIPTION
+     * | :-                 | :-             | :-          | :-
+     * | **tableName**      | string         | `""`        | Existing table name
+     * | **titles**         | string         | `tablename` | Table headers of the values ​​to be listed
+     * 
+     * 
+     * 
+     * ---
+     * 
+     * ### Examples
+     * ```ts
+     * await RELPG.LISTTABLE("users")
+     * ```
+     * > convert `SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema' AND tablename='user';`
+     * 
+     */
+    async LISTTABLE(
+        /**
+         *  `Table Name`
+         */
+        tableName: string,
+         /**
+         *  `Titles`
+         * 
+         * Note : The contents are a string separated by commas
+         */
+         titles: string="tablename"
+        ) {
+            // ${force?"":"IF NOT EXISTS"} 
+             const q = `SELECT ${titles} FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema' AND tablename='${tableName}';`
+             return await this.Query(q)
+    }
+//#endregion
+
+
 
 //#region /// CREATETABLE \\\
     /**
@@ -767,6 +814,10 @@ export class RelPg extends PG {
          *  `Table Name`
          */
         TableName: string,
+         /**
+         *  `Columns`
+         */
+         columns: string,
         /**
          *  `force status`
          * 
@@ -776,9 +827,10 @@ export class RelPg extends PG {
          */
         force: boolean = false
         ) {
-            
-             const q = `CREATE TABLE ${force?"":"[IF NOT EXISTS]"} ${TableName}`
-            console.log(q)
+            // ${force?"":"IF NOT EXISTS"} 
+             const q = `CREATE TABLE ${TableName} (${columns});`
+             console.log(q)
+             return await this.Query(q)
     }
 //#endregion
 

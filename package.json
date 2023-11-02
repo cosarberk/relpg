@@ -8,7 +8,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "nodemon ./build/index.js",
-    "start:dev": "tsc && npm run dev"
+    "start:dev": "tsc && npm run dev",
+    "test:npm": "tsc && sudo npm unlink relpg && sudo npm link"
   },
   "author": "Berk COŞAR <lookmainpoint@gmail.com>",
   "license": "MIT",
