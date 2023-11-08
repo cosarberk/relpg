@@ -4,6 +4,10 @@
 Relpg is  postgresql query structure for Relteco RelNode/relqueryengine.
 
 
+```sh
+npm i relpg
+```
+
 
 ## RelPg
 
