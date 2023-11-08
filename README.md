@@ -27,7 +27,7 @@ Relpg is  postgresql query structure for Relteco RelNode/relqueryengine.
  ```ts
  import { RelPg } from "relpg";
  
-  const DB = new relpg("localhost",5432,"postgres","postgres","password")
+ const DB = new RelPg("localhost",5432,"postgres","postgres","password")
 ```
 
 OR
@@ -35,7 +35,7 @@ OR
  ```ts
  const Relpg = require("relpg").RelPg;
  
-  const DB = new Relpg("localhost",5432,"postgres","postgres","password")
+ const DB = new Relpg("localhost",5432,"postgres","postgres","password")
 ```
 
 Note: The localhost value assumes that Postgresql is installed on your system.
