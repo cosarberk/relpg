@@ -593,6 +593,7 @@ export class RelPg extends PG {
      * await RELPG.LISTDB("postgres")
      * ```
      * > convert `SELECT datname FROM pg_catalog.pg_database WHERE datname = 'postgres'`
+     * 
      */
     async LISTDB(
         /**
