@@ -153,7 +153,7 @@ It creates a UPDATE string based on the parameters it receives and queries it wi
 
 ### Examples
 
-``ts
+```ts
 
 await RELPG.UPDATE("users","user_name","uid",["Berk","aaa-bbb-ccc"])
 
@@ -191,7 +191,7 @@ It creates a DELETE string based on the parameters it receives and queries it wi
 
 ### Examples
 
-``ts
+```ts
 
 await RELPG.DEL("users")
 
