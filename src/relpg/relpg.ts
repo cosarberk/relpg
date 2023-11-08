@@ -213,7 +213,7 @@ export class RelPg extends PG {
     * 
     */
     async Query(query: string, values: (string | number)[] = []) {
-        return new Promise((resolve) => {
+        return new Promise((resolve:any) => {
             this.db.query(query, values, (error: any, result: any) => {
                 if (error) { console.log(error) }
                 resolve(result);

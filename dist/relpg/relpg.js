@@ -1,19 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -23,39 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (g && (g = 0, op[0] && (_ = 0)), _) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RelPg = void 0;
-var pg_1 = require("pg");
+const pg_1 = require("pg");
 //#region /// RELPG CLASS \\\
-var PG = /** @class */ (function () {
-    function PG(db_host, db_port, db_user, db_name, db_password) {
+class PG {
+    constructor(db_host, db_port, db_user, db_name, db_password) {
         this.db_host = db_host;
         this.db_name = db_name;
         this.db_password = db_password;
@@ -77,9 +35,9 @@ var PG = /** @class */ (function () {
     *
     * ---
     */
-    PG.prototype.DBINFO = function () {
-        return " DB HOST : ".concat(this.db_host, " \n DB PORT : ").concat(this.db_port, " \n DB NAME : ").concat(this.db_name, " \n DB USER : ").concat(this.db_user, " \n DB PASS : ").concat(this.db_password, " \n");
-    };
+    DBINFO() {
+        return ` DB HOST : ${this.db_host} \n DB PORT : ${this.db_port} \n DB NAME : ${this.db_name} \n DB USER : ${this.db_user} \n DB PASS : ${this.db_password} \n`;
+    }
     /**
      *
      * ### DBCONNECT()
@@ -87,7 +45,7 @@ var PG = /** @class */ (function () {
      * opens new database connection
      *
      */
-    PG.prototype.DBCONNECT = function () {
+    DBCONNECT() {
         return new pg_1.Pool({
             user: this.db_user,
             host: this.db_host,
@@ -95,9 +53,8 @@ var PG = /** @class */ (function () {
             password: this.db_password,
             port: this.db_port,
         });
-    };
-    return PG;
-}());
+    }
+}
 //#endregion
 //#region /// RELPG CLASS \\\
 /**
@@ -129,44 +86,36 @@ var PG = /** @class */ (function () {
 *
 * Note: The localhost value assumes that Postgresql is installed on your system.
 */
-var RelPg = /** @class */ (function (_super) {
-    __extends(RelPg, _super);
-    function RelPg(db_host, db_port, db_user, db_name, db_password) {
-        if (db_host === void 0) { db_host = "localhost"; }
-        if (db_port === void 0) { db_port = 5432; }
-        if (db_user === void 0) { db_user = "postgres"; }
-        if (db_name === void 0) { db_name = "postgres"; }
-        if (db_password === void 0) { db_password = "1234"; }
-        var _this = _super.call(this, db_host, db_port, db_user, db_name, db_password) || this;
-        _this.db = _this.DBCONNECT();
-        return _this;
+class RelPg extends PG {
+    constructor(db_host = "localhost", db_port = 5432, db_user = "postgres", db_name = "postgres", db_password = "1234") {
+        super(db_host, db_port, db_user, db_name, db_password);
+        this.db = this.DBCONNECT();
     }
     //#region /// CREATE SYMBOL FUNCTIONS \\\
     /**
      *  For queries, they create references to query values ​​with $
      */
-    RelPg.prototype.CREATE$ = function (num) {
-        var b = "";
-        for (var i = 0; i < num; i++) {
+    CREATE$(num) {
+        let b = "";
+        for (let i = 0; i < num; i++) {
             i !== 0 ? b += ",$" + (i + 1) : b += "$" + 1;
         }
         return b;
-    };
-    RelPg.prototype.CREATEEQUAL$ = function (titles) {
-        var b = "";
-        for (var i = 0; i < titles.length; i++) {
+    }
+    CREATEEQUAL$(titles) {
+        let b = "";
+        for (let i = 0; i < titles.length; i++) {
             i !== 0 ? b += "," + titles[i] + "=$" + (i + 1) : b += titles[i] + "=$" + 1;
         }
         return b;
-    };
-    RelPg.prototype.CREATEEQUAL$AND = function (titles, plus) {
-        if (plus === void 0) { plus = 1; }
-        var b = "";
-        for (var i = 0; i < titles.length; i++) {
+    }
+    CREATEEQUAL$AND(titles, plus = 1) {
+        let b = "";
+        for (let i = 0; i < titles.length; i++) {
             i !== 0 ? b += " AND " + titles[i] + "=$" + (i + plus) : b += titles[i] + "=$" + plus;
         }
         return b;
-    };
+    }
     //#endregion
     //#region /// QUERY \\\
     /**
@@ -194,22 +143,18 @@ var RelPg = /** @class */ (function (_super) {
     *
     *
     */
-    RelPg.prototype.Query = function (query, values) {
-        if (values === void 0) { values = []; }
-        return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
-            return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve) {
-                        _this.db.query(query, values, function (error, result) {
-                            if (error) {
-                                console.log(error);
-                            }
-                            resolve(result);
-                        });
-                    })];
+    Query(query, values = []) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve) => {
+                this.db.query(query, values, (error, result) => {
+                    if (error) {
+                        console.log(error);
+                    }
+                    resolve(result);
+                });
             });
         });
-    };
+    }
     //#endregion
     ///////////////////// CRUD METHODS \\\\\\\\\\\\\\\\\\\\\\\\
     //#region /// LIST \\\
@@ -255,7 +200,7 @@ var RelPg = /** @class */ (function (_super) {
      * > convert `SELECT * FROM users WHERE user_phone=$1AND user_status=$2 ORDER BY uid ASC`
      *
      */
-    RelPg.prototype.LIST = function (
+    LIST(
     /**
      *  `Table Name`
      */
@@ -265,7 +210,7 @@ var RelPg = /** @class */ (function (_super) {
      *
      * Note : The contents are a string separated by commas
      */
-    titles, 
+    titles = "*", 
     /**
      *  `where`
      *
@@ -273,38 +218,27 @@ var RelPg = /** @class */ (function (_super) {
      *
      * Note: this value also requires 'values' to be filled in
      */
-    where, 
+    where = "", 
     /**
      *  `values`
      *
      * filter values
      */
-    values, 
+    values = [], 
     /**
     *  `more`
     *
     * optional query continuation
     */
-    more) {
-        if (titles === void 0) { titles = "*"; }
-        if (where === void 0) { where = ""; }
-        if (values === void 0) { values = []; }
-        if (more === void 0) { more = ""; }
-        return __awaiter(this, void 0, void 0, function () {
-            var q;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (where !== "" && values.length > 0) {
-                            more = "WHERE ".concat(this.CREATEEQUAL$AND(where.split(",")), " ") + more;
-                        }
-                        q = "SELECT ".concat(titles, " FROM ").concat(tableName, " ").concat(more);
-                        return [4 /*yield*/, this.Query(q, values)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+    more = "") {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (where !== "" && values.length > 0) {
+                more = `WHERE ${this.CREATEEQUAL$AND(where.split(","))} ` + more;
+            }
+            const q = `SELECT ${titles} FROM ${tableName} ${more}`;
+            return yield this.Query(q, values);
         });
-    };
+    }
     //#endregion
     //#region /// ADD \\\
     /**
@@ -336,7 +270,7 @@ var RelPg = /** @class */ (function (_super) {
      * > convert `INSERT INTO users (user_name,user_surname) VALUES ($1,$2) RETURNING *;`
      *
      */
-    RelPg.prototype.ADD = function (
+    ADD(
     /**
      *  `Table Name`
      */
@@ -360,22 +294,12 @@ var RelPg = /** @class */ (function (_super) {
     *
     * optional query continuation
     */
-    more) {
-        if (titles === void 0) { titles = ""; }
-        if (values === void 0) { values = []; }
-        if (more === void 0) { more = "RETURNING *;"; }
-        return __awaiter(this, void 0, void 0, function () {
-            var q;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        q = "INSERT INTO ".concat(tableName, " (").concat(titles, ") VALUES (").concat(this.CREATE$(titles.split(",").length), ") ").concat(more);
-                        return [4 /*yield*/, this.Query(q, values)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+    more = "RETURNING *;") {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = `INSERT INTO ${tableName} (${titles}) VALUES (${this.CREATE$(titles.split(",").length)}) ${more}`;
+            return yield this.Query(q, values);
         });
-    };
+    }
     //#endregion
     //#region /// UPDATE \\\
     /**
@@ -418,7 +342,7 @@ var RelPg = /** @class */ (function (_super) {
      * > convert `UPDATE users SET user_name=$1,user_surname=$2 WHERE uid=$3 AND user_surname=$4  RETURNING *;`
      *
      */
-    RelPg.prototype.UPDATE = function (
+    UPDATE(
     /**
      *  `Table Name`
      */
@@ -471,25 +395,14 @@ var RelPg = /** @class */ (function (_super) {
     *
     * optional query continuation
     */
-    more) {
-        if (titles === void 0) { titles = ""; }
-        if (where === void 0) { where = ""; }
-        if (values === void 0) { values = []; }
-        if (more === void 0) { more = "RETURNING *;"; }
-        return __awaiter(this, void 0, void 0, function () {
-            var t, w, q;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        t = titles.split(",");
-                        w = where.split(",");
-                        q = "UPDATE ".concat(tableName, " SET ").concat(this.CREATEEQUAL$(t), " WHERE ").concat(this.CREATEEQUAL$AND(w, t.length + 1), "  ").concat(more);
-                        return [4 /*yield*/, this.Query(q, values)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+    more = "RETURNING *;") {
+        return __awaiter(this, void 0, void 0, function* () {
+            const t = titles.split(",");
+            const w = where.split(",");
+            const q = `UPDATE ${tableName} SET ${this.CREATEEQUAL$(t)} WHERE ${this.CREATEEQUAL$AND(w, t.length + 1)}  ${more}`;
+            return yield this.Query(q, values);
         });
-    };
+    }
     //#endregion
     //#region /// DEL \\\
     /**
@@ -537,7 +450,7 @@ var RelPg = /** @class */ (function (_super) {
      * > convert `DELETE FROM users WHERE user_name=$1 AND user_surname=$2 RETURNING *;`
      *
      */
-    RelPg.prototype.DEL = function (
+    DEL(
     /**
      *  `Table Name`
      */
@@ -551,39 +464,29 @@ var RelPg = /** @class */ (function (_super) {
      *
      * Note: The contents are a string separated by commas
      */
-    where, 
+    where = "", 
     /**
      *  `values`
      *
      * header values ​​to update
      *
      */
-    values, 
+    values = [], 
     /**
     *  `more`
     *
     * optional query continuation
     */
-    more) {
-        if (where === void 0) { where = ""; }
-        if (values === void 0) { values = []; }
-        if (more === void 0) { more = "RETURNING *;"; }
-        return __awaiter(this, void 0, void 0, function () {
-            var w, q;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (where !== "" && values.length > 0) {
-                            w = where.split(",");
-                            more = "WHERE ".concat(this.CREATEEQUAL$AND(w), " ") + more;
-                        }
-                        q = "DELETE FROM ".concat(tableName, " ").concat(more);
-                        return [4 /*yield*/, this.Query(q, values)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+    more = "RETURNING *;") {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (where !== "" && values.length > 0) {
+                const w = where.split(",");
+                more = `WHERE ${this.CREATEEQUAL$AND(w)} ` + more;
+            }
+            const q = `DELETE FROM ${tableName} ${more}`;
+            return yield this.Query(q, values);
         });
-    };
+    }
     //#endregion
     ///////////////////// DATABASE METHODS \\\\\\\\\\\\\\\\\\\\\\\\
     //#region /// LISTDB \\\
@@ -613,8 +516,9 @@ var RelPg = /** @class */ (function (_super) {
      * await RELPG.LISTDB("postgres")
      * ```
      * > convert `SELECT datname FROM pg_catalog.pg_database WHERE datname = 'postgres'`
+     *
      */
-    RelPg.prototype.LISTDB = function (
+    LISTDB(
     /**
      * `value`
      *
@@ -622,14 +526,14 @@ var RelPg = /** @class */ (function (_super) {
      *
      * filter value
      */
-    value, 
+    value = "", 
     /**
      *  `Titles`
      *
      * NOTE: takes a single value
      *
      */
-    titles, 
+    titles = "datname", 
     /**
      *  `where`
      *
@@ -639,22 +543,12 @@ var RelPg = /** @class */ (function (_super) {
      *
      * Note: this value also requires 'values' to be filled in
      */
-    where) {
-        if (value === void 0) { value = ""; }
-        if (titles === void 0) { titles = "datname"; }
-        if (where === void 0) { where = "datname"; }
-        return __awaiter(this, void 0, void 0, function () {
-            var q;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        q = "SELECT ".concat(titles, " FROM pg_catalog.pg_database WHERE ").concat(where, " = '").concat(value, "'");
-                        return [4 /*yield*/, this.Query(q)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+    where = "datname") {
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = `SELECT ${titles} FROM pg_catalog.pg_database WHERE ${where} = '${value}'`;
+            return yield this.Query(q);
         });
-    };
+    }
     //#endregion
     //#region /// DELETEDB \\\
     /**
@@ -683,23 +577,16 @@ var RelPg = /** @class */ (function (_super) {
      * > convert `DROP DATABASE IF EXISTS postgres`
      *
      */
-    RelPg.prototype.DELETEDB = function (
+    DELETEDB(
     /**
      *  `Database Name`
      */
     DBName) {
-        return __awaiter(this, void 0, void 0, function () {
-            var q;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        q = "DROP DATABASE IF EXISTS ".concat(DBName);
-                        return [4 /*yield*/, this.Query(q)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = `DROP DATABASE IF EXISTS ${DBName}`;
+            return yield this.Query(q);
         });
-    };
+    }
     //#endregion
     //#region /// CREATEDB \\\
     /**
@@ -729,7 +616,7 @@ var RelPg = /** @class */ (function (_super) {
      * > convert `CREATE DATABASE postgres`
      *
      */
-    RelPg.prototype.CREATEDB = function (
+    CREATEDB(
     /**
      *  `Database Name`
      */
@@ -741,36 +628,26 @@ var RelPg = /** @class */ (function (_super) {
      *
      * NOTE : This action will delete all data in the database.
      */
-    force) {
-        if (force === void 0) { force = false; }
-        return __awaiter(this, void 0, void 0, function () {
-            var rd, q, q;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.LISTDB(DBName)];
-                    case 1:
-                        rd = _a.sent();
-                        if (!(rd.rowCount > 0)) return [3 /*break*/, 6];
-                        if (!force) return [3 /*break*/, 4];
-                        return [4 /*yield*/, this.DELETEDB(DBName)];
-                    case 2:
-                        _a.sent();
-                        q = "CREATE DATABASE ".concat(DBName);
-                        return [4 /*yield*/, this.Query(q)];
-                    case 3: return [2 /*return*/, _a.sent()];
-                    case 4:
-                        console.log("Database already exists");
-                        return [2 /*return*/, rd.rows];
-                    case 5: return [3 /*break*/, 8];
-                    case 6:
-                        q = "CREATE DATABASE ".concat(DBName);
-                        return [4 /*yield*/, this.Query(q)];
-                    case 7: return [2 /*return*/, _a.sent()];
-                    case 8: return [2 /*return*/];
+    force = false) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const rd = yield this.LISTDB(DBName);
+            if (rd.rowCount > 0) {
+                if (force) {
+                    yield this.DELETEDB(DBName);
+                    const q = `CREATE DATABASE ${DBName}`;
+                    return yield this.Query(q);
                 }
-            });
+                else {
+                    console.log("Database already exists");
+                    return rd.rows;
+                }
+            }
+            else {
+                const q = `CREATE DATABASE ${DBName}`;
+                return yield this.Query(q);
+            }
         });
-    };
+    }
     //#endregion
     ///////////////////// TABLE METHODS \\\\\\\\\\\\\\\\\\\\\\\\
     //#region /// LISTTABLE \\\
@@ -801,7 +678,7 @@ var RelPg = /** @class */ (function (_super) {
      * > convert `SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema' AND tablename='user';`
      *
      */
-    RelPg.prototype.LISTTABLE = function (
+    LISTTABLE(
     /**
      *  `Table Name`
      */
@@ -811,20 +688,13 @@ var RelPg = /** @class */ (function (_super) {
     *
     * Note : The contents are a string separated by commas
     */
-    titles) {
-        if (titles === void 0) { titles = "tablename"; }
-        return __awaiter(this, void 0, void 0, function () {
-            var q;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        q = "SELECT ".concat(titles, " FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema' AND tablename='").concat(tableName, "';");
-                        return [4 /*yield*/, this.Query(q)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+    titles = "tablename") {
+        return __awaiter(this, void 0, void 0, function* () {
+            // ${force?"":"IF NOT EXISTS"} 
+            const q = `SELECT ${titles} FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema' AND tablename='${tableName}';`;
+            return yield this.Query(q);
         });
-    };
+    }
     //#endregion
     //#region /// DELETETABLE \\\
     /**
@@ -857,23 +727,16 @@ var RelPg = /** @class */ (function (_super) {
      * > convert `DELETE DROP users;`
      *
      */
-    RelPg.prototype.DELETETABLE = function (
+    DELETETABLE(
     /**
      *  `Table Name`
      */
     TableName) {
-        return __awaiter(this, void 0, void 0, function () {
-            var q;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        q = "DROP TABLE ".concat(TableName, ";");
-                        return [4 /*yield*/, this.Query(q)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+        return __awaiter(this, void 0, void 0, function* () {
+            const q = `DROP TABLE ${TableName};`;
+            return yield this.Query(q);
         });
-    };
+    }
     //#endregion
     //#region /// CREATETABLE \\\
     /**
@@ -909,7 +772,7 @@ var RelPg = /** @class */ (function (_super) {
      * > convert `CREATE TABLE users (user_id INT NOT NULL , user_name VARCHAR(50) UNIQUE NOT NULL , PRIMARY KEY (user_id));`
      *
      */
-    RelPg.prototype.CREATETABLE = function (
+    CREATETABLE(
     /**
      *  `Table Name`
      */
@@ -925,36 +788,26 @@ var RelPg = /** @class */ (function (_super) {
      *
      * NOTE : This action will delete all data in the table.
      */
-    force) {
-        if (force === void 0) { force = false; }
-        return __awaiter(this, void 0, void 0, function () {
-            var rd, q, q;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.LISTTABLE(TableName)];
-                    case 1:
-                        rd = _a.sent();
-                        if (!(rd.rowCount > 0)) return [3 /*break*/, 6];
-                        if (!force) return [3 /*break*/, 4];
-                        return [4 /*yield*/, this.DELETETABLE(TableName)];
-                    case 2:
-                        _a.sent();
-                        q = "CREATE TABLE ".concat(TableName, " (").concat(columns, ");");
-                        return [4 /*yield*/, this.Query(q)];
-                    case 3: return [2 /*return*/, _a.sent()];
-                    case 4:
-                        console.log("Table already exists");
-                        return [2 /*return*/, rd.rows];
-                    case 5: return [3 /*break*/, 8];
-                    case 6:
-                        q = "CREATE TABLE ".concat(TableName, " (").concat(columns, ");");
-                        return [4 /*yield*/, this.Query(q)];
-                    case 7: return [2 /*return*/, _a.sent()];
-                    case 8: return [2 /*return*/];
+    force = false) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const rd = yield this.LISTTABLE(TableName);
+            if (rd.rowCount > 0) {
+                if (force) {
+                    yield this.DELETETABLE(TableName);
+                    const q = `CREATE TABLE ${TableName} (${columns});`;
+                    return yield this.Query(q);
                 }
-            });
+                else {
+                    console.log("Table already exists");
+                    return rd.rows;
+                }
+            }
+            else {
+                const q = `CREATE TABLE ${TableName} (${columns});`;
+                return yield this.Query(q);
+            }
         });
-    };
+    }
     //#endregion
     //#region /// ALTERTABLE \\\
     /**
@@ -984,7 +837,7 @@ var RelPg = /** @class */ (function (_super) {
      * > convert `ALTER TABLE users ADD COLUMN user_name VARCHAR(100) NOT NULL;`
      *
      */
-    RelPg.prototype.ALTERTABLE = function (
+    ALTERTABLE(
     /**
      *  `Table Name`
      */
@@ -993,18 +846,12 @@ var RelPg = /** @class */ (function (_super) {
      *  `action`
      */
     action) {
-        return __awaiter(this, void 0, void 0, function () {
-            var q;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        q = "ALTER TABLE ".concat(tableName, " ").concat(action, ";");
-                        return [4 /*yield*/, this.Query(q)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+        return __awaiter(this, void 0, void 0, function* () {
+            // ${force?"":"IF NOT EXISTS"} 
+            const q = `ALTER TABLE ${tableName} ${action};`;
+            return yield this.Query(q);
         });
-    };
+    }
     //#endregion
     //#region /// ADDCOLUMN \\\
     /**
@@ -1038,7 +885,7 @@ var RelPg = /** @class */ (function (_super) {
      * > convert `ALTER TABLE users ADD COLUMN user_name `
      *
      */
-    RelPg.prototype.ADDCOL = function (
+    ADDCOL(
     /**
      *  `Table Name`
      *
@@ -1062,20 +909,12 @@ var RelPg = /** @class */ (function (_super) {
      *
      * column constraint to add
      */
-    constraint) {
-        if (constraint === void 0) { constraint = ""; }
-        return __awaiter(this, void 0, void 0, function () {
-            var actions;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        actions = "ADD COLUMN ".concat(columnName, " ").concat(dataType, " ").concat(constraint);
-                        return [4 /*yield*/, this.ALTERTABLE(tableName, actions)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+    constraint = "") {
+        return __awaiter(this, void 0, void 0, function* () {
+            const actions = `ADD COLUMN ${columnName} ${dataType} ${constraint}`;
+            return yield this.ALTERTABLE(tableName, actions);
         });
-    };
+    }
     //#endregion
     //#region /// DELCOLUMN \\\
     /**
@@ -1107,7 +946,7 @@ var RelPg = /** @class */ (function (_super) {
      * > convert `ALTER TABLE users DROP COLUMN user_name `
      *
      */
-    RelPg.prototype.DELCOL = function (
+    DELCOL(
     /**
      *  `Table Name`
      *
@@ -1120,18 +959,11 @@ var RelPg = /** @class */ (function (_super) {
      * column name to delete
      */
     columnName) {
-        return __awaiter(this, void 0, void 0, function () {
-            var actions;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        actions = "DROP COLUMN ".concat(columnName);
-                        return [4 /*yield*/, this.ALTERTABLE(tableName, actions)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+        return __awaiter(this, void 0, void 0, function* () {
+            const actions = `DROP COLUMN ${columnName}`;
+            return yield this.ALTERTABLE(tableName, actions);
         });
-    };
+    }
     //#endregion
     //#region /// RENAMECOLUMN \\\
     /**
@@ -1164,7 +996,7 @@ var RelPg = /** @class */ (function (_super) {
      * > convert `ALTER TABLE users RENAME COLUMN user_name TO username`
      *
      */
-    RelPg.prototype.RENAMECOL = function (
+    RENAMECOL(
     /**
      *  `Table Name`
      *
@@ -1183,18 +1015,11 @@ var RelPg = /** @class */ (function (_super) {
     * new column name to update
     */
     newColumnName) {
-        return __awaiter(this, void 0, void 0, function () {
-            var actions;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        actions = "RENAME COLUMN ".concat(columnName, " TO ").concat(newColumnName);
-                        return [4 /*yield*/, this.ALTERTABLE(tableName, actions)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+        return __awaiter(this, void 0, void 0, function* () {
+            const actions = `RENAME COLUMN ${columnName} TO ${newColumnName}`;
+            return yield this.ALTERTABLE(tableName, actions);
         });
-    };
+    }
     //#endregion
     //#region /// RENAMETABLE \\\
     /**
@@ -1226,7 +1051,7 @@ var RelPg = /** @class */ (function (_super) {
      * > convert `ALTER TABLE users RENAME TO accounts`
      *
      */
-    RelPg.prototype.RENAMETABLE = function (
+    RENAMETABLE(
     /**
      *  `Table Name`
      *
@@ -1239,18 +1064,11 @@ var RelPg = /** @class */ (function (_super) {
      * table name to update
      */
     newTableName) {
-        return __awaiter(this, void 0, void 0, function () {
-            var actions;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        actions = "RENAME TO ".concat(newTableName);
-                        return [4 /*yield*/, this.ALTERTABLE(tableName, actions)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+        return __awaiter(this, void 0, void 0, function* () {
+            const actions = `RENAME TO ${newTableName}`;
+            return yield this.ALTERTABLE(tableName, actions);
         });
-    };
+    }
     //#endregion
     //#region /// ALTERCOLUMN \\\
     /**
@@ -1281,7 +1099,7 @@ var RelPg = /** @class */ (function (_super) {
      * > convert `ALTER TABLE users ALTER COLUMN user_name TYPE VARCHAR`
      *
      */
-    RelPg.prototype.ALTERCOL = function (
+    ALTERCOL(
     /**
      *  `Table Name`
      */
@@ -1296,18 +1114,11 @@ var RelPg = /** @class */ (function (_super) {
      *  `action`
      */
     action) {
-        return __awaiter(this, void 0, void 0, function () {
-            var actions;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        actions = "ALTER COLUMN ".concat(columnName, " ").concat(action);
-                        return [4 /*yield*/, this.ALTERTABLE(tableName, actions)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+        return __awaiter(this, void 0, void 0, function* () {
+            const actions = `ALTER COLUMN ${columnName} ${action}`;
+            return yield this.ALTERTABLE(tableName, actions);
         });
-    };
+    }
     //#endregion
     //#region /// ALTERCOLUMNTYPE \\\
     /**
@@ -1362,7 +1173,7 @@ var RelPg = /** @class */ (function (_super) {
      * > convert `ALTER TABLE users ALTER COLUMN user_id TYPE INT USING asset_no::integer;`
      *
      */
-    RelPg.prototype.COLTYPE = function (
+    COLTYPE(
     /**
      *  `Table Name`
      */
@@ -1384,21 +1195,13 @@ var RelPg = /** @class */ (function (_super) {
      *
      *  expression for USING tag
      */
-    expression) {
-        if (expression === void 0) { expression = ""; }
-        return __awaiter(this, void 0, void 0, function () {
-            var exp, actions;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        exp = expression === "" ? "" : "USING ".concat(expression);
-                        actions = "TYPE ".concat(dataType, " ").concat(exp);
-                        return [4 /*yield*/, this.ALTERCOL(tableName, columnName, actions)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+    expression = "") {
+        return __awaiter(this, void 0, void 0, function* () {
+            const exp = expression === "" ? `` : `USING ${expression}`;
+            const actions = `TYPE ${dataType} ${exp}`;
+            return yield this.ALTERCOL(tableName, columnName, actions);
         });
-    };
+    }
     //#endregion
     //#region /// ALTERCOLUMNSETDEFAULT \\\
     /**
@@ -1450,7 +1253,7 @@ var RelPg = /** @class */ (function (_super) {
      
      * ```
      */
-    RelPg.prototype.COLDEFAULT = function (
+    COLDEFAULT(
     /**
      *  `Table Name`
      */
@@ -1487,20 +1290,12 @@ var RelPg = /** @class */ (function (_super) {
     * ```
     */
     Default) {
-        return __awaiter(this, void 0, void 0, function () {
-            var actions;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        actions = "SET DEFAULT ".concat(Default);
-                        return [4 /*yield*/, this.ALTERCOL(tableName, columnName, actions)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+        return __awaiter(this, void 0, void 0, function* () {
+            const actions = `SET DEFAULT ${Default}`;
+            return yield this.ALTERCOL(tableName, columnName, actions);
         });
-    };
-    return RelPg;
-}(PG));
+    }
+}
 exports.RelPg = RelPg;
 //#endregion
 // "smallint": "smallint",
